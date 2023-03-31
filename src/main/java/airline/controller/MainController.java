@@ -1,36 +1,37 @@
 package airline.controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
+import airline.config.EmailService;
 import airline.dao.AdminDao;
 import airline.dao.BookingDao;
 import airline.dao.BookingFlightDao;
+import airline.dao.ContactDao;
 import airline.dao.FlightDao;
 import airline.dao.FlightPassengerDao;
 import airline.dao.PassengerDao;
@@ -38,6 +39,7 @@ import airline.dao.TrainDao;
 import airline.model.Admin;
 import airline.model.Booking;
 import airline.model.BookingFlight;
+import airline.model.Contact;
 import airline.model.Flight;
 import airline.model.FlightPassenger;
 import airline.model.Passenger;
@@ -60,16 +62,31 @@ public class MainController {
 	
 	@Autowired
 	private FlightDao flightDao;
+	@Autowired
+	private ContactDao contactDao;
 	
 	@Autowired
 	private FlightPassengerDao flightPassengerDao;
 	@Autowired
 	private BookingFlightDao bookingFlightDao;
-	
     @Autowired
-    private HibernateTemplate hibernateTemplate;
+    private EmailService emailService;
+    
 
 	private List<Flight> allFlights;
+	private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final int PNR_LENGTH = 6;
+
+    public static String generatePNR() {
+        StringBuilder sb = new StringBuilder(PNR_LENGTH);
+        Random random = new Random();
+        for (int i = 0; i < PNR_LENGTH; i++) {
+            int index = random.nextInt(ALPHA_NUMERIC_STRING.length());
+            sb.append(ALPHA_NUMERIC_STRING.charAt(index));
+        }
+        return sb.toString();
+    }
+
 
 	@RequestMapping("/")
 	public String home(Model m) {
@@ -98,7 +115,7 @@ public class MainController {
 			// m.addAttribute("students", students);
 			m.addAttribute("loggedinuser", admin.getUsername());
 			RedirectView redirectView = new RedirectView();
-			redirectView.setUrl(request.getContextPath() + "/findflight");
+			redirectView.setUrl(request.getContextPath() + "/landingUserMapping");
 			return redirectView;
 		} else {
 			RedirectView redirectView = new RedirectView();
@@ -108,6 +125,12 @@ public class MainController {
 
 	}
 
+	
+	@RequestMapping("/landingUserMapping")
+	public String showRegularUserLandingPage(Model m) {
+		return "landingUser";
+	}
+	
 	@RequestMapping("/loginfailed")
 	public String showLoginFailed(Model m) {
 		return "error";
@@ -222,6 +245,21 @@ public class MainController {
 	        BookingFlight bookingFlight = new BookingFlight(flightById, passenger);
 	        bookings.add(bookingFlight);
 	        bookingFlightDao.saveBooking(bookingFlight);
+	        emailService.sendHtmlEmail(passenger.getEmail(), passenger.getName(),"<html>"
+	                + "<head>"
+	                + "<meta charset=\"utf-8\">"
+	                + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+	                + "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css\">"
+	                + "</head>"
+	                + "<body>"
+	                + "<div class=\"container\">"
+	                + "<h2>Booking Confirmation</h2>"
+	                + "<p>Hello " + passenger.getName() + ",</p>"
+	                + "<p>Your booking is confirmed. Your flight PNR is : " + generatePNR() + "</p>"
+	                + "<p>Thank you for choosing our airline.</p>"
+	                + "</div>"
+	                + "</body>"
+	                + "</html>");
 	    }
 	    
 	    // redirect to a confirmation page
@@ -230,5 +268,39 @@ public class MainController {
 	    m.addAttribute("bookings", bookings);
 	    return "successFlightBooking";
 	}
+	@RequestMapping(value = "/handleSubmitContact", method = RequestMethod.POST)
+	public String confirmBooking(@RequestParam("name") String name,
+			@RequestParam("message") String inputMessage,
+			@RequestParam("email") String email, Model m) {
+		
+		contactDao.addContact(new Contact(name, email, inputMessage));
+        
+//		emailService.sendHtmlEmail(email, "We have heard you "+name, "We have received your concern:"
+//				+ "\nSomeone from our team will contact you within next 48 hours"
+//				+ "\nYour message : "+ inputMessage);
+		
+		emailService.sendHtmlEmail(email, "We have heard you "+name, 
+			    "<html><head>"
+			    + "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" "
+			    + "integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" "
+			    + "crossorigin=\"anonymous\">"
+			    + "</head><body>"
+			    + "<div class=\"container\">"
+			    + "<h1>We have received your concern</h1>"
+			    + "<p>Someone from our team will contact you within the next 48 hours.</p>"
+			    + "<p>Your message:</p>"
+			    + "<p>" + inputMessage + "</p>"
+			    + "</div>"
+			    + "</body></html>");
 
+		
+		return "landingUser";
+	}
+	
+
+
+    @GetMapping("/contactUs")
+    public String showContactUsPage() {
+        return "contactUs";
+    }
 }

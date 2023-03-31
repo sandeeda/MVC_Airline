@@ -39,6 +39,20 @@
 
 	</bean>
 
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="sdsts28cloud1@gmail.com" />
+		<property name="password" value="szpwdisknwkgzlrd" />
+
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
+	</bean>
 
 
 	<!-- LocalSessionFactoryBean -->
@@ -71,6 +85,7 @@
 				<value>airline.model.Flight</value>
 				<value>airline.model.FlightPassenger</value>
 				<value>airline.model.BookingFlight</value>
+				<value>airline.model.Contact</value>
 			</list>
 		</property>
 

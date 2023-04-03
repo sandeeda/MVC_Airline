@@ -121,7 +121,9 @@ input[type="text"], input[type="password"] {
 <body>
 
 <div class="container">
-
+<img
+			src="https://user-images.githubusercontent.com/42469977/229559631-6d7577b1-dc0a-43db-bb70-6e934a5d7bea.png"
+			alt="Logo" style="width: 300px; height: auto;">
   <h1>Welcome to our airline</h1>
 
   <div class="row">

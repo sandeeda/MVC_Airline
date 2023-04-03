@@ -105,7 +105,12 @@ input[type="text"], input[type="password"] {
 </style>
 </head>
 <body>
+<img
+			src="https://user-images.githubusercontent.com/42469977/229565982-7d636539-43ac-4cad-bcb8-fcfa6f6db967.png"
+			alt="Logo" style="width: 400px; height: auto;">
+
 	<div class="container">
+	
 		<h1>Booking Confirmation</h1>
 		<p>Your flight booking has been confirmed!</p>
 		

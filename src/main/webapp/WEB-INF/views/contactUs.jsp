@@ -139,6 +139,9 @@ textarea {
 			<button type="submit" class="glow-on-hover">Submit</button>
 		</form>
 	</div>
+	<img
+		src="https://user-images.githubusercontent.com/42469977/229330098-345d9ad5-54c6-4cf0-9c93-2b983de5dd17.png"
+		alt="Logo" style="width: 500px; height: auto;">
 	<!-- Bootstrap JS -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

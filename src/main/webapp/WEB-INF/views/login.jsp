@@ -113,10 +113,7 @@ input[type="text"], input[type="password"] {
 
 </head>
 <body>
-<!-- 	
-<img id="travelers-img"
-		src="https://img.favpng.com/17/11/10/beach-vacation-summer-euclidean-vector-png-favpng-daHpAJXaFFyZvSUYq8gb7CLMV.jpg"
-		alt="Travelers Concept Illustration"> -->
+
 	<div class="container mt-5">
 		<h2>Login Form</h2>
 		<form action="${pageContext.request.contextPath }/handle-login"
@@ -133,6 +130,10 @@ input[type="text"], input[type="password"] {
 			</div>
 			<button type="submit" class="glow-on-hover" >Submit</button>
 		</form>
+		
 	</div>
+	<img
+			src="https://user-images.githubusercontent.com/42469977/229558427-5f8b731d-2523-4210-823d-0892b2065359.png"
+			alt="Logo" style="width: 300px; height: auto;">
 </body>
 </html>

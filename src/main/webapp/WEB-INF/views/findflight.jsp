@@ -118,6 +118,9 @@ input[type="text"], input[type="password"] {
 </style>
 <body>
 	<div class="container">
+	<img
+			src="https://user-images.githubusercontent.com/42469977/229556539-0e605b27-838b-46e0-a25e-a51f1a9e24ec.png"
+			alt="Logo" style="width: 300px; height: auto;">
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
 				<h1 class="text-center" style="color: white;">

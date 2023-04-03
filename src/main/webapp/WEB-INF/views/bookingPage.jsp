@@ -108,6 +108,9 @@ input[type="text"], input[type="password"] {
 </head>
 <body>
 	<div class="container mt-5">
+	<img
+			src="https://user-images.githubusercontent.com/42469977/229565307-5068351c-058a-4488-b3f7-7e6dd5f06597.png"
+			alt="Logo" style="width: 500px; height: auto;">
 		<h1>Booking Page</h1>
 		<p>Flight Details:</p>
 		<table class="table">

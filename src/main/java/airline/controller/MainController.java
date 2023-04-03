@@ -9,15 +9,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,36 +23,21 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import airline.config.EmailService;
 import airline.dao.AdminDao;
-import airline.dao.BookingDao;
 import airline.dao.BookingFlightDao;
 import airline.dao.ContactDao;
 import airline.dao.FlightDao;
 import airline.dao.FlightPassengerDao;
-import airline.dao.PassengerDao;
-import airline.dao.TrainDao;
 import airline.model.Admin;
-import airline.model.Booking;
 import airline.model.BookingFlight;
 import airline.model.Contact;
 import airline.model.Flight;
 import airline.model.FlightPassenger;
-import airline.model.Passenger;
-import airline.model.Train;
 
 @Controller
 public class MainController {
 
 	@Autowired
 	private AdminDao adminDao;
-
-	@Autowired
-	private TrainDao trainDao;
-
-	@Autowired
-	private PassengerDao passengerDao;
-
-	@Autowired
-	private BookingDao bookingDao;
 	
 	@Autowired
 	private FlightDao flightDao;
@@ -136,12 +115,6 @@ public class MainController {
 		return "error";
 	}
 
-	@RequestMapping("/pathlistoftrains")
-	public String showListOfAllTrains(Model m) {
-		List<Train> allTrains = this.trainDao.getAll();
-		m.addAttribute("listoftrains", allTrains);
-		return "listoftrains";
-	}
 
 	@RequestMapping("/findflight")
 	public String bookFlight(Model m) {
@@ -164,39 +137,6 @@ public class MainController {
 	}
 	
 
-	@RequestMapping(value = "/handle-filtertrain", method = RequestMethod.POST)
-	public String showListOfTrainsBySrcAndDest(@RequestParam String source, @RequestParam String destination, Model m) {
-		List<Train> allTrains = this.trainDao.getTrainsBySourceAndDestination(source, destination);
-		m.addAttribute("listoftrains", allTrains);
-		if (source.equals("") || destination.equals("")) {
-			allTrains = this.trainDao.getAll();
-			m.addAttribute("listoftrains", allTrains);
-		}
-		return "listoftrains";
-	}
-
-	@RequestMapping(value = "/handle-booktrain", method = RequestMethod.POST)
-	public String showRegistrationToBookTrain(@RequestParam String trainId, Model m) {
-		Train trainById = trainDao.getById(Integer.valueOf(trainId));
-		m.addAttribute("trainbyid", trainById);
-		return "bookingform";
-	}
-
-	@RequestMapping(value = "/handle-booking", method = RequestMethod.POST)
-	public String handleBookingRequest(@RequestParam String trainId, @RequestParam String firstName,
-			@RequestParam String lastName, @RequestParam String phoneNumber, @RequestParam String age, Model m) {
-		Train trainById = trainDao.getById(Integer.valueOf(trainId));
-		Passenger passenger = new Passenger();
-		passenger.setAge(age);
-		passenger.setFirstName(firstName);
-		passenger.setLastName(lastName);
-		passenger.setPhoneNumber(phoneNumber);
-		passengerDao.addPassenger(passenger);
-		Booking booking = new Booking(trainById, passenger);
-		bookingDao.saveBooking(booking);
-		m.addAttribute("booking", booking);
-		return "success";
-	}
 	
 	@RequestMapping(value = "/handle-filterFlight", method = RequestMethod.POST)
 	public String handleBookFlightRequest (@RequestParam String source,

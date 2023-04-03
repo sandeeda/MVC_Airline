@@ -148,6 +148,9 @@ input[type="text"], input[type="password"] {
 				</c:forEach>
 			</tbody>
 		</table>
+		<img
+			src="https://user-images.githubusercontent.com/42469977/229564511-7858b30d-e3a6-4a1e-bb1e-efda889658ad.png"
+			alt="Logo" style="width: 800px; height: auto;">
 	</div>
 </body>
 </html>

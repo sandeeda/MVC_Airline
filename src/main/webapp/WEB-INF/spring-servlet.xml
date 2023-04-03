@@ -44,7 +44,7 @@
 		<property name="host" value="smtp.gmail.com" />
 		<property name="port" value="587" />
 		<property name="username" value="sdsts28cloud1@gmail.com" />
-		<property name="password" value="szpwdisknwkgzlrd" />
+		<property name="password" value="zpwdisknwkgzlrds" />
 
 		<property name="javaMailProperties">
 			<props>
@@ -79,9 +79,6 @@
 		<property name="annotatedClasses">
 			<list>
 				<value>airline.model.Admin</value>
-				<value>airline.model.Train</value>
-				<value>airline.model.Passenger</value>
-				<value>airline.model.Booking</value>
 				<value>airline.model.Flight</value>
 				<value>airline.model.FlightPassenger</value>
 				<value>airline.model.BookingFlight</value>

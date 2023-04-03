@@ -5,7 +5,6 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import airline.model.Booking;
 import airline.model.BookingFlight;
 
 @Repository
